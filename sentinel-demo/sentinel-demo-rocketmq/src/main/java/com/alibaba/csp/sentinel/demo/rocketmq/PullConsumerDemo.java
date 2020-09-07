@@ -44,6 +44,7 @@ public class PullConsumerDemo {
 
     private static final Map<MessageQueue, Long> OFFSET_TABLE = new HashMap<MessageQueue, Long>();
 
+    @SuppressWarnings("PMD.ThreadPoolCreationRule")
     private static final ExecutorService pool = Executors.newFixedThreadPool(32);
 
     private static final AtomicLong SUCCESS_COUNT = new AtomicLong(0);
@@ -75,14 +76,11 @@ public class PullConsumerDemo {
                     putMessageQueueOffset(mq, nextOffset);
                     consumer.updateConsumeOffset(mq, nextOffset);
                     switch (pullResult.getPullStatus()) {
-                        case FOUND:
-                            break;
-                        case NO_MATCHED_MSG:
-                            break;
                         case NO_NEW_MSG:
                             break SINGLE_MQ;
+                        case FOUND:
+                        case NO_MATCHED_MSG:
                         case OFFSET_ILLEGAL:
-                            break;
                         default:
                             break;
                     }

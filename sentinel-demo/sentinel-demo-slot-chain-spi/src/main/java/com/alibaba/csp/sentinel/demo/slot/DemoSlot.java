@@ -19,21 +19,23 @@ import com.alibaba.csp.sentinel.context.Context;
 import com.alibaba.csp.sentinel.node.DefaultNode;
 import com.alibaba.csp.sentinel.slotchain.AbstractLinkedProcessorSlot;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
+import com.alibaba.csp.sentinel.spi.SpiOrder;
 
 /**
  * An example slot that records current context and entry resource.
  *
  * @author Eric Zhao
  */
+@SpiOrder(-3500)
 public class DemoSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
 
     @Override
-    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count, Object... args)
-        throws Throwable {
+    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count, boolean prioritized, Object... args)
+            throws Throwable {
         System.out.println("Current context: " + context.getName());
         System.out.println("Current entry resource: " + context.getCurEntry().getResourceWrapper().getName());
 
-        fireEntry(context, resourceWrapper, node, count, args);
+        fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
 
     @Override
